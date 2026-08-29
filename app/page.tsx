@@ -11,7 +11,6 @@ export default function Home() {
   const [year, setYear] = useState<number | null>(null);
 
   const joinEarlyAccess = useMutation(api.earlyAccess.join);
-  const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   // Sticky nav treatment
@@ -63,10 +62,14 @@ export default function Home() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!email.includes("@")) return;
     setStatus("submitting");
+    const form = new FormData(e.currentTarget);
     try {
-      await joinEarlyAccess({ email });
+      await joinEarlyAccess({
+        name: String(form.get("name") ?? ""),
+        email: String(form.get("email") ?? ""),
+        phone: String(form.get("phone") ?? ""),
+      });
       setStatus("success");
     } catch {
       setStatus("error");
@@ -617,33 +620,64 @@ export default function Home() {
                 with diabetes or prediabetes. Join the early-access list to hear when pilot
                 conversations open.
               </p>
-              <form className="form" onSubmit={handleSubmit}>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="Your email address"
-                  autoComplete="email"
-                  required
-                  aria-label="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={status === "submitting" || status === "success"}
-                />
-                <button type="submit" disabled={status === "submitting" || status === "success"}>
-                  {status === "submitting" ? "Joining…" : "Join early access"}
-                </button>
-              </form>
-              {status === "success" && (
-                <div className="success" style={{ display: "block" }}>
-                  You&apos;re on the list. Thank you — we&apos;ll keep this simple and useful.
+              {status === "success" ? (
+                <div className="success-state">
+                  <div className="success-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="m5 12.5 4.5 4.5L19 7.5"
+                        stroke="#fff"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <p className="success-title">You&apos;re on the list!</p>
+                  <p className="success-sub">
+                    We&apos;ll reach out on WhatsApp or email when pilot conversations open.
+                  </p>
                 </div>
+              ) : (
+                <form className="form" onSubmit={handleSubmit}>
+                  <div className="form-row">
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="Your name"
+                      required
+                      aria-label="Your name"
+                      disabled={status === "submitting"}
+                    />
+                    <input
+                      name="phone"
+                      type="tel"
+                      placeholder="Mobile number"
+                      required
+                      aria-label="Mobile number"
+                      disabled={status === "submitting"}
+                    />
+                  </div>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Your email address"
+                    autoComplete="email"
+                    required
+                    aria-label="Email address"
+                    disabled={status === "submitting"}
+                  />
+                  <button type="submit" disabled={status === "submitting"}>
+                    {status === "submitting" ? "Joining…" : "Join early access"}
+                  </button>
+                  {status === "error" && (
+                    <div className="error-msg" style={{ display: "block" }}>
+                      That didn&apos;t go through. Try again.
+                    </div>
+                  )}
+                  <div className="legal">Early-access signups are stored in Diya&apos;s waitlist.</div>
+                </form>
               )}
-              {status === "error" && (
-                <div className="error-msg" style={{ display: "block" }}>
-                  That didn&apos;t go through. Try again.
-                </div>
-              )}
-              <div className="legal">Early-access signups are stored in Diya&apos;s waitlist.</div>
             </div>
           </div>
         </section>

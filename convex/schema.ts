@@ -19,7 +19,9 @@ export default defineSchema({
   }).index("by_inviteCode", ["inviteCode"]),
 
   earlyAccess: defineTable({
+    name: v.string(),
     email: v.string(),
+    phone: v.string(),
     createdAt: v.number(),
   }),
 });
