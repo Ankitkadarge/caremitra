@@ -391,7 +391,7 @@ export default function Home() {
               <span className="dot"></span> Designed for conversation
             </span>
             <h2 className="section-title reveal" ref={addReveal}>
-              Not another dashboard your parents have to learn.
+              Built for parents, not tech experts
             </h2>
             <p className="section-copy reveal" ref={addReveal}>
               Diya is built around the most universal interface: talking.
