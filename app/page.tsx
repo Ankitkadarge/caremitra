@@ -120,7 +120,7 @@ export default function Home() {
               <p>
                 Diya is a warm voice companion for parents living with diabetes or
                 prediabetes — helping them stay consistent with daily routines while keeping
-                their son, daughter, or caregiver meaningfully in the loop.
+                their family in the loop.
               </p>
               <div className="hero-actions">
                 <a className="btn btn-primary" href="#early-access">
@@ -170,7 +170,7 @@ export default function Home() {
 
               <div className="distance-card">
                 <strong>Built for families living apart</strong>
-                <span>Because care should not depend on being in the same city.</span>
+                <span>Care shouldn&apos;t depend on living in the same city.</span>
               </div>
 
               <div className="call-card">
@@ -272,6 +272,129 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="section impact">
+          <div className="container">
+            <span className="eyebrow">
+              <span className="dot"></span> The scale of the problem
+            </span>
+            <h2 className="section-title reveal" ref={addReveal}>
+              Diabetes in India, by the numbers.
+            </h2>
+
+            <div className="impact-layout">
+              <div className="impact-numbers reveal" ref={addReveal}>
+                <div className="impact-number-card">
+                  <strong>101M</strong>
+                  <span>Indians living with diabetes</span>
+                </div>
+                <div className="impact-number-card">
+                  <strong>136M</strong>
+                  <span>Indians who are prediabetic</span>
+                </div>
+              </div>
+
+              <div className="impact-bars reveal" ref={addReveal}>
+                <div className="impact-bar-row">
+                  <div className="impact-bar-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <rect
+                        x="3.5"
+                        y="8.5"
+                        width="17"
+                        height="7"
+                        rx="3.5"
+                        transform="rotate(-45 12 12)"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                      />
+                      <path d="M9.5 14.5l5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  <div className="impact-bar-body">
+                    <div className="impact-bar-label">
+                      <span>Medication adherence</span>
+                      <span>~50%</span>
+                    </div>
+                    <div className="impact-bar-track">
+                      <div className="impact-bar-fill" style={{ width: "50%" }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="impact-bar-row">
+                  <div className="impact-bar-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 20c-4.5 0-7.5-3.5-7.5-8 0-3.2 1.8-5 3.6-5 1.2 0 1.9.7 2.4.7.5 0 1.5-.9 3-.9 1.2 0 3 .6 4 2.6"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path d="M13 4c1.4 0 2.5 1.3 2.3 3-1.6.2-2.7-1-2.3-3Z" fill="currentColor" />
+                    </svg>
+                  </div>
+                  <div className="impact-bar-body">
+                    <div className="impact-bar-label">
+                      <span>Diet adherence</span>
+                      <span>~30%</span>
+                    </div>
+                    <div className="impact-bar-track">
+                      <div className="impact-bar-fill" style={{ width: "30%" }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="impact-bar-row">
+                  <div className="impact-bar-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <circle cx="14" cy="5" r="1.6" fill="currentColor" />
+                      <path
+                        d="M9 20l2.4-5 2-2-1-4-3 1.5-1.5 3M11.4 9 14 8l3 2.5 3-1"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div className="impact-bar-body">
+                    <div className="impact-bar-label">
+                      <span>Exercise adherence</span>
+                      <span>~20%</span>
+                    </div>
+                    <div className="impact-bar-track">
+                      <div className="impact-bar-fill" style={{ width: "20%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="impact-note reveal" ref={addReveal}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s8-4.5 8-12V5l-8-3-8 3v5c0 7.5 8 12 8 12Z" stroke="currentColor" strokeWidth="1.8" />
+                <path
+                  d="m9 12 2 2 4-5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span>Lifestyle non-compliance is the biggest barrier in chronic disease management.</span>
+            </div>
+
+            <p className="impact-source">
+              Diabetes and prediabetes figures: ICMR-INDIAB study,{" "}
+              <em>The Lancet Diabetes &amp; Endocrinology</em>, 2023. Medication adherence
+              figure: World Health Organization. Diet and exercise adherence are commonly
+              cited estimates from chronic-disease research, not exact measurements — none
+              of these numbers are about Diya.
+            </p>
+          </div>
+        </section>
+
         <section className="section" id="families">
           <div className="container split">
             <div className="sticky-copy reveal" ref={addReveal}>
@@ -330,7 +453,7 @@ export default function Home() {
                     <path d="M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                   </svg>
                 </div>
-                <h3>Care information is fragmented</h3>
+                <h3>Nothing is written down in one place</h3>
                 <p>
                   What happened today is usually buried in memory, missed calls, notebooks or
                   short messages. Diya can make routine check-ins more structured.
@@ -352,9 +475,8 @@ export default function Home() {
               A simple voice loop between parent, Diya and caregiver.
             </h2>
             <p className="section-copy reveal" ref={addReveal}>
-              The product is deliberately boring in the best way: the parent answers the
-              phone, talks naturally, and gets practical support without learning another
-              app.
+              It&apos;s simple on purpose. The parent just answers the phone, talks normally,
+              and gets real help — no new app to learn.
             </p>
             <div className="steps">
               <article className="step reveal" ref={addReveal}>
@@ -367,15 +489,14 @@ export default function Home() {
               </article>
               <article className="step reveal" ref={addReveal}>
                 <div className="step-num">02 — UNDERSTAND</div>
-                <h3>The conversation becomes useful context</h3>
+                <h3>Talking turns into useful notes</h3>
                 <p>
-                  Instead of form-filling, Diya listens to the parent&apos;s natural response
-                  and structures the important bits.
+                  No forms to fill. Diya just listens and picks out what matters.
                 </p>
               </article>
               <article className="step reveal" ref={addReveal}>
                 <div className="step-num">03 — SUPPORT</div>
-                <h3>Family stays meaningfully informed</h3>
+                <h3>Family stays in the know</h3>
                 <p>
                   Caregivers can understand what needs attention without making every family
                   call about diabetes.
@@ -416,7 +537,7 @@ export default function Home() {
 
               <div className="feature-side">
                 <article className="feature-small reveal" ref={addReveal}>
-                  <h3>Built around family context</h3>
+                  <h3>Made with the whole family in mind</h3>
                   <p>
                     The caregiver may live elsewhere, but they should still be able to
                     understand how things are going.
@@ -460,9 +581,9 @@ export default function Home() {
                 <article className="feature-small reveal" ref={addReveal} style={{ background: "#eef5f9" }}>
                   <h3>Made for diabetes &amp; prediabetes first</h3>
                   <p>
-                    A focused product can become more useful than a generic &ldquo;AI health
-                    assistant&rdquo; because the routines, language and caregiver concerns are
-                    clearer.
+                    We only do one thing: help with diabetes care. That means Diya understands
+                    the routines, the language, and what caregivers actually worry about —
+                    better than a general AI assistant could.
                   </p>
                 </article>
               </div>
@@ -483,7 +604,7 @@ export default function Home() {
               <span className="eyebrow" style={{ width: "max-content" }}>
                 <span className="dot"></span> For sons &amp; daughters
               </span>
-              <h2>Be present without needing to be physically present.</h2>
+              <h2>Care for them, even from another city.</h2>
               <p>
                 Diya is for the family member who cares deeply but cannot always be there
                 because of work, studies, marriage, travel or simply living in another city.
@@ -511,7 +632,7 @@ export default function Home() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span>Spot patterns that may deserve a real family conversation.</span>
+                  <span>Notice things worth a real conversation.</span>
                 </div>
                 <div className="check">
                   <svg viewBox="0 0 24 24" fill="none">
@@ -534,7 +655,7 @@ export default function Home() {
           <div className="container demo-grid">
             <div className="reveal" ref={addReveal}>
               <span className="eyebrow">
-                <span className="dot"></span> Product reference
+                <span className="dot"></span> Watch a demo
               </span>
               <h2 className="section-title">See how the product helps manage diabetes</h2>
               <p className="section-copy">
@@ -556,15 +677,14 @@ export default function Home() {
         <section className="section" id="safety">
           <div className="container">
             <span className="eyebrow">
-              <span className="dot"></span> Trust has to be designed in
+              <span className="dot"></span> Clear about its limits
             </span>
             <h2 className="section-title reveal" ref={addReveal}>
               Supporting your parents between doctor visits
             </h2>
             <p className="section-copy reveal" ref={addReveal}>
-              For a health product, the landing page should be explicit about boundaries.
-              Diya can support routines and conversations; it should not pretend to
-              diagnose, prescribe or replace qualified medical care.
+              Diya can support daily routines and conversations. It does not diagnose,
+              prescribe medicine, or replace medical care.
             </p>
             <div className="safety-grid">
               <article className="safety-card reveal" ref={addReveal}>
@@ -573,10 +693,7 @@ export default function Home() {
                   <path d="M9 12h6M12 9v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
                 <h3>Clear medical boundaries</h3>
-                <p>
-                  No diagnosis, prescription changes or emergency decision-making presented
-                  as professional medical advice.
-                </p>
+                <p>Diya never diagnoses, changes medicines, or gives medical advice.</p>
               </article>
               <article className="safety-card reveal" ref={addReveal}>
                 <svg viewBox="0 0 24 24" fill="none">
@@ -585,8 +702,8 @@ export default function Home() {
                 </svg>
                 <h3>Privacy by design</h3>
                 <p>
-                  Health conversations are sensitive. Consent, access and data retention
-                  should be understandable to both parent and caregiver.
+                  Health conversations are private. We&apos;ll always be clear with both the
+                  parent and caregiver about what&apos;s shared, and for how long.
                 </p>
               </article>
               <article className="safety-card reveal" ref={addReveal}>
@@ -596,9 +713,8 @@ export default function Home() {
                 </svg>
                 <h3>Escalate when appropriate</h3>
                 <p>
-                  Potentially concerning responses should direct people toward their
-                  caregiver, clinician or emergency services rather than overconfident AI
-                  guidance.
+                  If something sounds concerning, Diya points people to their caregiver,
+                  doctor, or emergency services — not more AI advice.
                 </p>
               </article>
             </div>
