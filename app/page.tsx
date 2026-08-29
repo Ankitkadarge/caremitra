@@ -164,10 +164,7 @@ export default function Home() {
             <div className="hero-visual" aria-label="Parent and daughter using Diya">
               <div className="photo-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/family-care.jpg"
-                  alt="A daughter and her father smiling together while looking at a phone"
-                />
+                <img src="/diya-hero.jpg" alt="Diya, wearing a name tag, smiling at the camera" />
               </div>
 
               <div className="distance-card">
