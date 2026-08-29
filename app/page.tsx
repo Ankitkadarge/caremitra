@@ -8,8 +8,6 @@ export default function Home() {
   const navWrapRef = useRef<HTMLDivElement>(null);
   const callTimeRef = useRef<HTMLDivElement>(null);
   const revealRefs = useRef<(HTMLElement | null)[]>([]);
-  const [year, setYear] = useState<number | null>(null);
-
   const joinEarlyAccess = useMutation(api.earlyAccess.join);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
@@ -50,10 +48,6 @@ export default function Home() {
       if (callTimeRef.current) callTimeRef.current.textContent = `${mins}:${secs}`;
     }, 1000);
     return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
   }, []);
 
   const addReveal = (el: HTMLElement | null) => {
@@ -695,7 +689,7 @@ export default function Home() {
             <a href="#demo">Demo</a>
             <a href="#early-access">Early access</a>
           </div>
-          <div>© {year} Diya</div>
+          <div>© {new Date().getFullYear()} Diya</div>
         </div>
       </footer>
     </>
