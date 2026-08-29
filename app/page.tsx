@@ -559,7 +559,7 @@ export default function Home() {
               <span className="dot"></span> Trust has to be designed in
             </span>
             <h2 className="section-title reveal" ref={addReveal}>
-              A companion, not a doctor in disguise.
+              Supporting your parents between doctor visits
             </h2>
             <p className="section-copy reveal" ref={addReveal}>
               For a health product, the landing page should be explicit about boundaries.
