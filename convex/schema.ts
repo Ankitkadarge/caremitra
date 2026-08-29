@@ -17,4 +17,9 @@ export default defineSchema({
     structured: v.any(),
     createdAt: v.number(),
   }).index("by_inviteCode", ["inviteCode"]),
+
+  earlyAccess: defineTable({
+    email: v.string(),
+    createdAt: v.number(),
+  }),
 });

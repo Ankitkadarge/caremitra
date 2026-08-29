@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as earlyAccess from "../earlyAccess.js";
 import type * as waitlist from "../waitlist.js";
 
 import type {
@@ -17,6 +18,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  earlyAccess: typeof earlyAccess;
   waitlist: typeof waitlist;
 }>;
 

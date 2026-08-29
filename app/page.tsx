@@ -1,268 +1,678 @@
-import SignupForm from "./components/SignupForm";
+"use client";
 
-function DiyaMark({ className = "" }: { className?: string }) {
+import { useMutation } from "convex/react";
+import { useEffect, useRef, useState, FormEvent } from "react";
+import { api } from "../convex/_generated/api";
+
+function PhotoPlaceholder({ label }: { label: string }) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M4 20c0 5 5.4 8 12 8s12-3 12-8"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-      <ellipse cx="16" cy="20" rx="12" ry="3.2" stroke="currentColor" strokeWidth="1.6" />
-      <path
-        d="M16 6c-2.2 2.6-3.2 4.6-3.2 6.4 0 2 1.4 3.6 3.2 3.6s3.2-1.6 3.2-3.6C19.2 10.6 18.2 8.6 16 6Z"
-        fill="var(--accent)"
-      />
-    </svg>
+    <div className="photo-placeholder">
+      <span>{label}</span>
+    </div>
   );
 }
-
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-ink-muted">
-      {children}
-    </p>
-  );
-}
-
-function IconVoice() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-      <rect x="13" y="4" width="4" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M8 14v1a7 7 0 0 0 14 0v-1M15 22v3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconThread() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-      <circle cx="9" cy="9" r="3.2" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="21" cy="15" r="3.2" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="9" cy="21" r="3.2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M11.8 10.4 18.2 13.6M18.2 16.4 11.8 19.6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function IconFlag() {
-  return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-      <path d="M9 4v22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path
-        d="M9 5.5c3 -1.6 5.5 -1.6 8 0s5 1.6 8 0v10c-3 1.6-5.5 1.6-8 0s-5-1.6-8 0z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-const FEATURES = [
-  {
-    icon: IconVoice,
-    title: "Speaks their language",
-    body: "Hindi, Tamil, Bengali, whatever they're comfortable in. No apps to open, no menus — just talking.",
-  },
-  {
-    icon: IconThread,
-    title: "Remembers, so they don't repeat themselves",
-    body: "Yesterday's walk, this morning's meal, last week's dizzy spell — Diya keeps track, so every call picks up where the last one left off.",
-  },
-  {
-    icon: IconFlag,
-    title: "Tells you only what matters",
-    body: "Not a transcript. A short, plain update — and a nudge on the days something's actually worth a call.",
-  },
-];
-
-const FINDINGS = [
-  {
-    quote:
-      "When family stays involved in a person's day-to-day diabetes care, self-management improves and blood sugar control gets better over time.",
-    source: "Journal of Behavioral Medicine, 2021 — FAMS family-involvement study",
-    href: "https://link.springer.com/article/10.1007/s10865-021-00250-w",
-  },
-  {
-    quote:
-      "Automated phone check-ins, backed by a nurse following up, improved blood sugar control and how satisfied patients felt with their care.",
-    source: "Diabetes Care, 2001 — Piette et al., VA health system trial",
-    href: "https://pubmed.ncbi.nlm.nih.gov/11213866/",
-  },
-  {
-    quote:
-      "Patients treated in their own language showed a real improvement in blood sugar control, compared to being treated in a language they weren't fluent in.",
-    source: "Journal of General Internal Medicine, 2014 — language concordance & diabetes self-care",
-    href: "https://link.springer.com/article/10.1007/s11606-014-3006-7",
-  },
-];
 
 export default function Home() {
+  const navWrapRef = useRef<HTMLDivElement>(null);
+  const callTimeRef = useRef<HTMLDivElement>(null);
+  const revealRefs = useRef<(HTMLElement | null)[]>([]);
+  const [year, setYear] = useState<number | null>(null);
+
+  const joinEarlyAccess = useMutation(api.earlyAccess.join);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+  // Sticky nav treatment
+  useEffect(() => {
+    const el = navWrapRef.current;
+    if (!el) return;
+    const setNav = () => el.classList.toggle("scrolled", window.scrollY > 8);
+    setNav();
+    window.addEventListener("scroll", setNav, { passive: true });
+    return () => window.removeEventListener("scroll", setNav);
+  }, []);
+
+  // Reveal-on-scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    revealRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // Fake call timer — purely visual
+  useEffect(() => {
+    let seconds = 134;
+    const id = setInterval(() => {
+      seconds += 1;
+      const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const secs = (seconds % 60).toString().padStart(2, "0");
+      if (callTimeRef.current) callTimeRef.current.textContent = `${mins}:${secs}`;
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
+  const addReveal = (el: HTMLElement | null) => {
+    if (el && !revealRefs.current.includes(el)) revealRefs.current.push(el);
+  };
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!email.includes("@")) return;
+    setStatus("submitting");
+    try {
+      await joinEarlyAccess({ email });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
-    <main>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full opacity-40 blur-[90px] motion-safe:animate-[pulse_5s_ease-in-out_infinite]"
-          style={{ background: "var(--accent-glow)" }}
-        />
-        <div className="relative mx-auto max-w-5xl px-6 pt-14 pb-16 md:px-10 md:pt-24 md:pb-24">
-          <div className="flex items-center gap-2 text-ink">
-            <DiyaMark className="h-6 w-6 text-accent" />
-            <span className="font-display text-xl">Diya</span>
-          </div>
-
-          <div className="mt-8 max-w-2xl">
-            <Eyebrow>For families managing a parent&apos;s diabetes from another city</Eyebrow>
-            <h1 className="mt-4 font-display text-[2.3rem] leading-[1.1] text-ink sm:text-[2.8rem] md:text-[3.4rem]">
-              They say they&apos;re fine. Diya checks anyway.
-            </h1>
-            <p className="mt-5 max-w-lg text-[17px] text-ink-muted md:text-[18px]">
-              Diya calls your parent every day, speaks with them in their own language, and
-              sends you a short update — so you know, without having to ask.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#signup"
-                className="flex h-14 w-full items-center justify-center rounded-full bg-accent px-8 text-[17px] font-medium text-bg sm:w-auto"
-              >
-                Set up their Diya
-              </a>
-              <a
-                href="#how-it-helps"
-                className="flex h-14 w-full items-center justify-center rounded-full border border-line px-8 text-[17px] font-medium text-ink sm:w-auto"
-              >
-                See how it helps
-              </a>
-            </div>
-          </div>
+    <>
+      <header className="nav-wrap" id="navWrap" ref={navWrapRef}>
+        <div className="container nav">
+          <a className="brand" href="#top" aria-label="Diya home">
+            <span className="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 3c2.8 3.2 4.7 5.8 4.7 8.5A4.7 4.7 0 0 1 12 16.2a4.7 4.7 0 0 1-4.7-4.7C7.3 8.8 9.2 6.2 12 3Z"
+                  fill="#fff"
+                />
+                <path
+                  d="M7 18.2c1.5 1.4 3.2 2.1 5 2.1s3.5-.7 5-2.1"
+                  stroke="#fff"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span>Diya — The Parent Companion</span>
+          </a>
+          <nav className="nav-links" aria-label="Primary navigation">
+            <a href="#how">How it works</a>
+            <a href="#families">For families</a>
+            <a href="#demo">Demo</a>
+            <a href="#safety">Safety</a>
+          </nav>
+          <a href="#early-access" className="nav-cta">
+            Join early access
+          </a>
         </div>
-      </section>
+      </header>
 
-      {/* A day with Diya */}
-      <section className="border-t border-line">
-        <div className="mx-auto max-w-5xl px-6 py-16 md:px-10 md:py-24">
-          <Eyebrow>A day with Diya</Eyebrow>
-          <h2 className="mt-3 font-display text-[2rem] leading-tight text-ink md:text-[2.4rem]">
-            Lit in the morning. Still glowing by evening.
-          </h2>
-
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-line bg-bg-elevated p-6 md:p-8">
-              <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-accent">
-                8:30 AM
+      <main id="top">
+        <section className="hero">
+          <div className="container hero-grid">
+            <div>
+              <span className="eyebrow">
+                <span className="dot"></span> Voice-first diabetes support for Indian families
+              </span>
+              <h1>
+                Get Your Parents&apos; <em className="diabetes">Diabetes</em> Under Control
+              </h1>
+              <p>
+                Diya is a warm voice companion for parents living with diabetes or
+                prediabetes — helping them stay consistent with daily routines while keeping
+                their son, daughter, or caregiver meaningfully in the loop.
               </p>
-              <p className="mt-3 text-[17px] text-ink">
-                Diya calls. &ldquo;Sugar thoda high hai, par medicine le li hai,&rdquo; they might
-                say — high, but the medicine&apos;s taken. Diya listens, asks a gentle
-                follow-up, and remembers it for tomorrow.
-              </p>
+              <div className="hero-actions">
+                <a className="btn btn-primary" href="#early-access">
+                  Get early access
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="m9 18 6-6-6-6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
+                <a className="btn btn-ghost" href="#demo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
+                  </svg>
+                  Watch how Diya works
+                </a>
+              </div>
+              <div className="micro">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <path
+                    d="m8.5 12 2.2 2.2 4.8-5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                No app to learn. No WhatsApp flow. Just a familiar phone call.
+              </div>
             </div>
-            <div className="rounded-2xl border border-line bg-bg-elevated p-6 md:p-8">
-              <p className="text-[13px] font-medium uppercase tracking-[0.08em] text-accent">
-                7:00 PM
-              </p>
-              <p className="mt-3 text-[17px] text-ink">
-                You get a short note on WhatsApp: what they said, what&apos;s changed since
-                yesterday, and whether tonight&apos;s worth a call.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* What Diya does */}
-      <section id="how-it-helps" className="border-t border-line">
-        <div className="mx-auto max-w-5xl px-6 py-16 md:px-10 md:py-24">
-          <Eyebrow>What Diya actually does</Eyebrow>
-          <h2 className="mt-3 font-display text-[2rem] leading-tight text-ink md:text-[2.4rem]">
-            Small, steady, every day.
-          </h2>
+            <div className="hero-visual" aria-label="Parent and daughter using Diya">
+              <div className="photo-card">
+                <PhotoPlaceholder label="Add family photo — public/family-care.jpg" />
+              </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {FEATURES.map((f) => {
-              const Icon = f.icon;
-              return (
-                <div key={f.title} className="rounded-2xl border border-line p-6">
-                  <div className="text-accent">
-                    <Icon />
+              <div className="distance-card">
+                <strong>Built for families living apart</strong>
+                <span>Because care should not depend on being in the same city.</span>
+              </div>
+
+              <div className="call-card">
+                <div className="call-top">
+                  <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+                    <div className="avatar">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M12 3c2.8 3.2 4.7 5.8 4.7 8.5A4.7 4.7 0 0 1 12 16.2a4.7 4.7 0 0 1-4.7-4.7C7.3 8.8 9.2 6.2 12 3Z"
+                          fill="#2f7d59"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="call-name">Diya calling</div>
+                      <div className="call-status">
+                        <span className="live-dot"></span> Voice check-in
+                      </div>
+                    </div>
                   </div>
-                  <p className="mt-4 text-[17px] font-medium text-ink">{f.title}</p>
-                  <p className="mt-2 text-[16px] text-ink-muted">{f.body}</p>
+                  <div className="call-time" ref={callTimeRef}>
+                    02:14
+                  </div>
                 </div>
-              );
-            })}
+                <div className="wave" aria-hidden="true">
+                  {Array.from({ length: 11 }).map((_, i) => (
+                    <span key={i}></span>
+                  ))}
+                </div>
+                <p className="call-quote">&ldquo;Uncle, did you manage your evening walk today?&rdquo;</p>
+                <div className="call-controls">
+                  <button className="round" aria-label="Mute">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                      />
+                      <path
+                        d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3M9 22h6"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                  <button className="round end" aria-label="End call">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M5.3 15.4c3.6-3.2 9.8-3.2 13.4 0"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M7.4 14.4 6 18M16.6 14.4 18 18"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                  <button className="round" aria-label="Speaker">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M5 10v4h4l5 4V6l-5 4H5Z"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M17 9.3a4 4 0 0 1 0 5.4M19.5 7a7 7 0 0 1 0 10"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Research */}
-      <section className="border-t border-line">
-        <div className="mx-auto max-w-5xl px-6 py-16 md:px-10 md:py-24">
-          <Eyebrow>What research says — not us</Eyebrow>
-          <h2 className="mt-3 font-display text-[2rem] leading-tight text-ink md:text-[2.4rem]">
-            Diya is new. This research isn&apos;t.
-          </h2>
-          <p className="mt-3 max-w-2xl text-[17px] text-ink-muted">
-            Diya hasn&apos;t published outcomes yet — we just started. But the ideas it&apos;s
-            built on have been studied for years.
-          </p>
+          <div className="container stats reveal" ref={addReveal}>
+            <div className="stats-grid">
+              <div className="stat">
+                <strong>Voice-first</strong>
+                <span>Designed around the phone habits parents already have.</span>
+              </div>
+              <div className="stat">
+                <strong>Family-aware</strong>
+                <span>Helps caregivers stay connected without constant calling or nagging.</span>
+              </div>
+              <div className="stat">
+                <strong>India-focused</strong>
+                <span>Built specifically for diabetes and prediabetes care journeys in India.</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {FINDINGS.map((f) => (
-              <a
-                key={f.source}
-                href={f.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-xl border-t-2 border-accent bg-bg-elevated p-5"
-              >
-                <p className="text-[16px] text-ink">{f.quote}</p>
-                <p className="mt-3 text-[14px] text-ink-muted underline underline-offset-2">
-                  {f.source}
+        <section className="section" id="families">
+          <div className="container split">
+            <div className="sticky-copy reveal" ref={addReveal}>
+              <span className="eyebrow">
+                <span className="dot"></span> The real problem
+              </span>
+              <h2 className="section-title">
+                Care gets harder when life puts kilometres in between.
+              </h2>
+              <p className="section-copy">
+                A parent may be in Jaipur. Their daughter may be working in Bengaluru. The
+                condition still needs daily attention — but neither side wants every
+                conversation to become &ldquo;Did you check your sugar?&rdquo;
+              </p>
+            </div>
+            <div className="story-stack">
+              <article className="story-card reveal" ref={addReveal}>
+                <div className="story-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                    />
+                    <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <h3>Daily consistency is the difficult part</h3>
+                <p>
+                  Meals, activity, medicines, glucose checks, sleep and follow-ups become
+                  dozens of tiny decisions repeated every day.
                 </p>
-              </a>
-            ))}
+              </article>
+              <article className="story-card reveal" ref={addReveal}>
+                <div className="story-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-5 4v-4.5A2.5 2.5 0 0 1 4 13.5v-8Z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <h3>Children want to help — without policing</h3>
+                <p>
+                  Caregivers often carry guilt from afar. Diya creates a gentler layer of
+                  everyday support between the parent and family.
+                </p>
+              </article>
+              <article className="story-card reveal" ref={addReveal}>
+                <div className="story-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 4h8M9 2h6v4H9V2Z" stroke="currentColor" strokeWidth="1.8" />
+                    <rect x="5" y="5" width="14" height="17" rx="3" stroke="currentColor" strokeWidth="1.8" />
+                    <path d="M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <h3>Care information is fragmented</h3>
+                <p>
+                  What happened today is usually buried in memory, missed calls, notebooks or
+                  short messages. Diya can make routine check-ins more structured.
+                </p>
+              </article>
+            </div>
           </div>
+        </section>
 
-          <p className="mt-5 max-w-2xl text-[15px] text-ink-muted">
-            These are independent, published studies about family involvement, phone-based
-            check-ins, and language-concordant care in general — not results from Diya.
-          </p>
-        </div>
-      </section>
-
-      {/* Signup */}
-      <section id="signup" className="border-t border-line">
-        <div className="mx-auto max-w-3xl px-6 py-16 md:px-10 md:py-24">
-          <Eyebrow>Get them set up</Eyebrow>
-          <h2 className="mt-3 font-display text-[2rem] leading-tight text-ink md:text-[2.4rem]">
-            Send them their invite
-          </h2>
-          <p className="mt-3 text-[17px] text-ink-muted">
-            Fill this in, and you&apos;ll get a link to send them on WhatsApp.
-          </p>
-
-          <div className="mt-8">
-            <SignupForm />
+        <section className="section how" id="how">
+          <div className="container">
+            <span
+              className="eyebrow"
+              style={{ background: "rgba(255,255,255,.07)", borderColor: "rgba(255,255,255,.14)", color: "#c9ead5" }}
+            >
+              <span className="dot"></span> How Diya works
+            </span>
+            <h2 className="section-title reveal" ref={addReveal}>
+              A simple voice loop between parent, Diya and caregiver.
+            </h2>
+            <p className="section-copy reveal" ref={addReveal}>
+              The product is deliberately boring in the best way: the parent answers the
+              phone, talks naturally, and gets practical support without learning another
+              app.
+            </p>
+            <div className="steps">
+              <article className="step reveal" ref={addReveal}>
+                <div className="step-num">01 — CALL</div>
+                <h3>Diya checks in by voice</h3>
+                <p>
+                  Short, scheduled conversations can ask about routines like meals, walks,
+                  medicine adherence or glucose checks.
+                </p>
+              </article>
+              <article className="step reveal" ref={addReveal}>
+                <div className="step-num">02 — UNDERSTAND</div>
+                <h3>The conversation becomes useful context</h3>
+                <p>
+                  Instead of form-filling, Diya listens to the parent&apos;s natural response
+                  and structures the important bits.
+                </p>
+              </article>
+              <article className="step reveal" ref={addReveal}>
+                <div className="step-num">03 — SUPPORT</div>
+                <h3>Family stays meaningfully informed</h3>
+                <p>
+                  Caregivers can understand what needs attention without making every family
+                  call about diabetes.
+                </p>
+              </article>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-5xl items-center gap-2 px-6 py-10 text-ink-muted md:px-10">
-          <DiyaMark className="h-4 w-4 text-accent" />
-          <span className="text-[15px]">Diya — The Parent Companion</span>
+        <section className="section">
+          <div className="container">
+            <span className="eyebrow">
+              <span className="dot"></span> Designed for conversation
+            </span>
+            <h2 className="section-title reveal" ref={addReveal}>
+              Not another dashboard your parents have to learn.
+            </h2>
+            <p className="section-copy reveal" ref={addReveal}>
+              Diya is built around the most universal interface: talking.
+            </p>
+
+            <div className="feature-grid">
+              <article className="feature-large reveal" ref={addReveal}>
+                <h3>Feels more like a familiar check-in than a health form.</h3>
+                <p>
+                  Diya can use everyday conversational language and keep the interaction
+                  focused on one small thing at a time.
+                </p>
+                <div className="dialogue">
+                  <div className="bubble diya">Namaste Uncle. Aaj lunch ke baad aap walk par gaye the?</div>
+                  <div className="bubble parent">Haan, around 20 minutes. Thoda late ho gaya tha.</div>
+                  <div className="bubble diya">
+                    That still counts. Kal bhi same time ke aas-paas rakhne ki koshish karenge?
+                  </div>
+                  <div className="bubble parent">Haan, theek hai.</div>
+                </div>
+              </article>
+
+              <div className="feature-side">
+                <article className="feature-small reveal" ref={addReveal}>
+                  <h3>Built around family context</h3>
+                  <p>
+                    The caregiver may live elsewhere, but they should still be able to
+                    understand how things are going.
+                  </p>
+                  <div className="mini-row">
+                    <div className="mini-icon">
+                      <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM16.5 12a3.5 3.5 0 1 0 0-7M2 21v-3a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v3M15 14h1a5 5 0 0 1 5 5v2"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <strong>Parent + caregiver</strong>
+                      <span>One care journey, even across different cities.</span>
+                    </div>
+                  </div>
+                  <div className="mini-row">
+                    <div className="mini-icon">
+                      <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 22s8-4.5 8-12V5l-8-3-8 3v5c0 7.5 8 12 8 12Z" stroke="currentColor" strokeWidth="1.8" />
+                        <path
+                          d="m9 12 2 2 4-5"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <strong>Support, not surveillance</strong>
+                      <span>Designed to preserve dignity and autonomy.</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article className="feature-small reveal" ref={addReveal} style={{ background: "#eef5f9" }}>
+                  <h3>Made for diabetes &amp; prediabetes first</h3>
+                  <p>
+                    A focused product can become more useful than a generic &ldquo;AI health
+                    assistant&rdquo; because the routines, language and caregiver concerns are
+                    clearer.
+                  </p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container family-panel reveal" ref={addReveal}>
+            <div className="family-img">
+              <PhotoPlaceholder label="Add family photo — public/family-care.jpg" />
+            </div>
+            <div className="family-copy">
+              <span className="eyebrow" style={{ width: "max-content" }}>
+                <span className="dot"></span> For sons &amp; daughters
+              </span>
+              <h2>Be present without needing to be physically present.</h2>
+              <p>
+                Diya is for the family member who cares deeply but cannot always be there
+                because of work, studies, marriage, travel or simply living in another city.
+              </p>
+              <div className="check-list">
+                <div className="check">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="m5 12.5 4.5 4.5L19 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Reduce repetitive &ldquo;Did you do this?&rdquo; conversations.</span>
+                </div>
+                <div className="check">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="m5 12.5 4.5 4.5L19 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Spot patterns that may deserve a real family conversation.</span>
+                </div>
+                <div className="check">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="m5 12.5 4.5 4.5L19 7.5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span>Let family calls feel like family calls again.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="demo">
+          <div className="container demo-grid">
+            <div className="reveal" ref={addReveal}>
+              <span className="eyebrow">
+                <span className="dot"></span> Product reference
+              </span>
+              <h2 className="section-title">Hear the product idea, not just the pitch.</h2>
+              <p className="section-copy">
+                Add a 45–60 second product demo at{" "}
+                <code>public/diya-reference.mp4</code> to show how the voice-agent experience
+                is intended to feel.
+              </p>
+              <div className="quote-box">
+                Tip for the final demo: start with the parent receiving a normal phone call,
+                then show the caregiver&apos;s side only after the conversation. That makes the
+                &ldquo;voice-first&rdquo; idea instantly obvious.
+              </div>
+            </div>
+            <div className="reveal" ref={addReveal}>
+              <div className="demo-video">
+                <div className="video-placeholder">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+                    <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
+                  </svg>
+                  <span>Demo video not added yet — drop one at public/diya-reference.mp4</span>
+                </div>
+              </div>
+              <div className="demo-note">Reference video provided for the current prototype landing page.</div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="safety">
+          <div className="container">
+            <span className="eyebrow">
+              <span className="dot"></span> Trust has to be designed in
+            </span>
+            <h2 className="section-title reveal" ref={addReveal}>
+              A companion, not a doctor in disguise.
+            </h2>
+            <p className="section-copy reveal" ref={addReveal}>
+              For a health product, the landing page should be explicit about boundaries.
+              Diya can support routines and conversations; it should not pretend to
+              diagnose, prescribe or replace qualified medical care.
+            </p>
+            <div className="safety-grid">
+              <article className="safety-card reveal" ref={addReveal}>
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22s8-4.5 8-12V5l-8-3-8 3v5c0 7.5 8 12 8 12Z" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M9 12h6M12 9v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+                <h3>Clear medical boundaries</h3>
+                <p>
+                  No diagnosis, prescription changes or emergency decision-making presented
+                  as professional medical advice.
+                </p>
+              </article>
+              <article className="safety-card reveal" ref={addReveal}>
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="5" y="10" width="14" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+                <h3>Privacy by design</h3>
+                <p>
+                  Health conversations are sensitive. Consent, access and data retention
+                  should be understandable to both parent and caregiver.
+                </p>
+              </article>
+              <article className="safety-card reveal" ref={addReveal}>
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3v18M3 12h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+                <h3>Escalate when appropriate</h3>
+                <p>
+                  Potentially concerning responses should direct people toward their
+                  caregiver, clinician or emergency services rather than overconfident AI
+                  guidance.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="section" id="early-access">
+          <div className="container">
+            <div className="cta-panel reveal" ref={addReveal}>
+              <h2>Help us build Diya for your family.</h2>
+              <p>
+                We&apos;re shaping the first version for Indian families supporting a parent
+                with diabetes or prediabetes. Join the early-access list to hear when pilot
+                conversations open.
+              </p>
+              <form className="form" onSubmit={handleSubmit}>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Your email address"
+                  autoComplete="email"
+                  required
+                  aria-label="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={status === "submitting" || status === "success"}
+                />
+                <button type="submit" disabled={status === "submitting" || status === "success"}>
+                  {status === "submitting" ? "Joining…" : "Join early access"}
+                </button>
+              </form>
+              {status === "success" && (
+                <div className="success" style={{ display: "block" }}>
+                  You&apos;re on the list. Thank you — we&apos;ll keep this simple and useful.
+                </div>
+              )}
+              {status === "error" && (
+                <div className="error-msg" style={{ display: "block" }}>
+                  That didn&apos;t go through. Try again.
+                </div>
+              )}
+              <div className="legal">Early-access signups are stored in Diya&apos;s waitlist.</div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div className="container footer-row">
+          <div>
+            <strong style={{ color: "var(--ink)" }}>Diya — The Parent Companion</strong>
+            <br />
+            Voice-first support for families managing diabetes &amp; prediabetes in India.
+          </div>
+          <div className="footer-links">
+            <a href="#safety">Safety</a>
+            <a href="#demo">Demo</a>
+            <a href="#early-access">Early access</a>
+          </div>
+          <div>© {year} Diya</div>
         </div>
       </footer>
-    </main>
+    </>
   );
 }
