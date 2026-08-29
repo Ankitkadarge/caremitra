@@ -145,8 +145,6 @@ button{cursor:pointer}
 /* demo */
 .demo-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:54px;align-items:center}
 .demo-video{border-radius:34px;overflow:hidden;box-shadow:var(--shadow);background:#111;position:relative}.demo-video video{width:100%;aspect-ratio:16/9;object-fit:cover;background:#111}.demo-note{margin-top:12px;font-size:12px;color:#7a887f}
-.video-placeholder{width:100%;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#cdd8d1;text-align:center;padding:24px;font-size:13px}
-.quote-box{margin-top:30px;padding:20px 22px;background:#fff;border:1px solid var(--line);border-radius:20px;color:#4e6055;font-size:15px}
 
 /* safety */
 .safety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}.safety-card{padding:26px;border-radius:24px;background:#fff;border:1px solid var(--line)}.safety-card h3{margin:14px 0 7px;font-size:19px}.safety-card p{margin:0;color:var(--muted);font-size:14px}.safety-card svg{width:26px;height:26px;color:var(--green)}

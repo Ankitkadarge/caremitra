@@ -541,25 +541,15 @@ export default function Home() {
               </span>
               <h2 className="section-title">Hear the product idea, not just the pitch.</h2>
               <p className="section-copy">
-                Add a 45–60 second product demo at{" "}
-                <code>public/diya-reference.mp4</code> to show how the voice-agent experience
-                is intended to feel.
+                A short look at how Diya sounds and feels in an actual conversation.
               </p>
-              <div className="quote-box">
-                Tip for the final demo: start with the parent receiving a normal phone call,
-                then show the caregiver&apos;s side only after the conversation. That makes the
-                &ldquo;voice-first&rdquo; idea instantly obvious.
-              </div>
             </div>
             <div className="reveal" ref={addReveal}>
               <div className="demo-video">
-                <div className="video-placeholder">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
-                    <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
-                  </svg>
-                  <span>Demo video not added yet — drop one at public/diya-reference.mp4</span>
-                </div>
+                <video controls preload="metadata" playsInline>
+                  <source src="/diya-reference.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
               <div className="demo-note">Reference video provided for the current prototype landing page.</div>
             </div>
