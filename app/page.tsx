@@ -4,14 +4,6 @@ import { useMutation } from "convex/react";
 import { useEffect, useRef, useState, FormEvent } from "react";
 import { api } from "../convex/_generated/api";
 
-function PhotoPlaceholder({ label }: { label: string }) {
-  return (
-    <div className="photo-placeholder">
-      <span>{label}</span>
-    </div>
-  );
-}
-
 export default function Home() {
   const navWrapRef = useRef<HTMLDivElement>(null);
   const callTimeRef = useRef<HTMLDivElement>(null);
@@ -171,7 +163,11 @@ export default function Home() {
 
             <div className="hero-visual" aria-label="Parent and daughter using Diya">
               <div className="photo-card">
-                <PhotoPlaceholder label="Add family photo — public/family-care.jpg" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/family-care.jpg"
+                  alt="A daughter and her father smiling together while looking at a phone"
+                />
               </div>
 
               <div className="distance-card">
@@ -479,7 +475,11 @@ export default function Home() {
         <section className="section">
           <div className="container family-panel reveal" ref={addReveal}>
             <div className="family-img">
-              <PhotoPlaceholder label="Add family photo — public/family-care.jpg" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/family-care.jpg"
+                alt="A daughter and her father smiling together while looking at a phone"
+              />
             </div>
             <div className="family-copy">
               <span className="eyebrow" style={{ width: "max-content" }}>
