@@ -114,7 +114,11 @@ export default function Home() {
                 <span className="dot"></span> Voice-first diabetes support for Indian families
               </span>
               <h1>
-                Get Your Parents&apos; <em className="diabetes">Diabetes</em> Under Control
+                Get Your Parents&apos;
+                <br />
+                <em className="diabetes">Diabetes</em>
+                <br />
+                Under Control
               </h1>
               <p>
                 Diya is a warm voice companion for parents living with diabetes or
