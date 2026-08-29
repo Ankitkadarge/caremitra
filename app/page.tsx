@@ -539,7 +539,7 @@ export default function Home() {
               <span className="eyebrow">
                 <span className="dot"></span> Product reference
               </span>
-              <h2 className="section-title">Hear the product idea, not just the pitch.</h2>
+              <h2 className="section-title">See how the product helps manage diabetes</h2>
               <p className="section-copy">
                 A short look at how Diya sounds and feels in an actual conversation.
               </p>
