@@ -17,8 +17,6 @@ const workSans = Work_Sans({
 
 export const metadata: Metadata = {
   title: "CareMitra",
-  description:
-    "Your parent talks to CareMitra by voice, in their own language. You get a short update every day.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
