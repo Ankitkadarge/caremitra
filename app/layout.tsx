@@ -1,27 +1,30 @@
 import type { Metadata } from "next";
-import { Fraunces, Work_Sans } from "next/font/google";
+import { Instrument_Serif, Karla } from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const instrumentSerif = Instrument_Serif({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const workSans = Work_Sans({
+const karla = Karla({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "CareMitra",
+  title: "Diya — The Parent Companion",
+  description:
+    "Your parent talks to Diya by voice, in their own language. You get a short update every day.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${workSans.variable}`}>
+    <html lang="en" className={`${instrumentSerif.variable} ${karla.variable}`}>
       <body>
         <ConvexClientProvider>{children}</ConvexClientProvider>
       </body>
