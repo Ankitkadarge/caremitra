@@ -45,10 +45,10 @@ export default function SignupForm() {
     return (
       <div className="rounded-2xl border border-line bg-accent-tint p-6">
         <p className="font-display text-xl font-semibold text-ink">
-          His invite link is ready
+          Their invite link is ready
         </p>
         <p className="mt-2 text-[17px] text-ink-muted">
-          Send this to him on WhatsApp. Save it too — you&apos;ll need it if he loses the message.
+          Send this to them on WhatsApp. Save it too — you&apos;ll need it if they lose the message.
         </p>
 
         <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-line bg-bg px-4 py-3">
@@ -91,7 +91,7 @@ export default function SignupForm() {
       </label>
 
       <label className="flex flex-col gap-2">
-        <span className="text-[15px] font-medium text-ink-muted">His / her name</span>
+        <span className="text-[15px] font-medium text-ink-muted">Their name</span>
         <input
           name="parentName"
           required
@@ -135,7 +135,7 @@ export default function SignupForm() {
         disabled={status === "submitting"}
         className="mt-1 flex h-14 w-full items-center justify-center rounded-full bg-accent text-[17px] font-medium text-white disabled:opacity-60"
       >
-        {status === "submitting" ? "Getting his link…" : "Get his invite link"}
+        {status === "submitting" ? "Getting their link…" : "Get their invite link"}
       </button>
 
       {status === "error" && (
