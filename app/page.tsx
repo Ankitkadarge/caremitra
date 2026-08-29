@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SignupForm from "./components/SignupForm";
 
 function Waveform() {
@@ -67,7 +68,19 @@ export default function Home() {
   return (
     <main className="mx-auto max-w-[560px] px-6">
       {/* Hero */}
-      <section className="flex flex-col items-start gap-5 pt-16 pb-14">
+      <section className="flex flex-col items-start gap-5 pt-10 pb-14">
+        <div className="w-full">
+          <div className="inline-flex rounded-2xl bg-white p-2 shadow-[0_1px_2px_rgba(34,30,23,0.08)]">
+            <Image
+              src="/hero.jpg"
+              alt="A daughter and her father smiling together while looking at a phone"
+              width={3164}
+              height={2110}
+              priority
+              className="h-[120px] w-auto rounded-xl object-contain sm:h-[150px]"
+            />
+          </div>
+        </div>
         <Eyebrow>For daughters managing a parent&apos;s diabetes from another city</Eyebrow>
         <h1 className="font-display text-[2.1rem] font-semibold leading-[1.15] text-ink sm:text-[2.5rem]">
           They tell you they&apos;re fine. You already know that&apos;s not the whole story.
