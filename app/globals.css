@@ -186,6 +186,8 @@ footer{padding:34px 0 50px;color:#718078;font-size:13px}.footer-row{display:flex
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .wave span{animation-duration:1.2s!important;animation-iteration-count:infinite!important}
+  .live-dot{animation-duration:1.8s!important;animation-iteration-count:infinite!important}
 }
 
 @media (max-width: 980px){
